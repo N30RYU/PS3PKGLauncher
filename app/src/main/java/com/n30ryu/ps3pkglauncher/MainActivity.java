@@ -1,3 +1,4 @@
+```java
 package com.n30ryu.ps3pkglauncher;
 
 import android.app.Activity;
@@ -16,7 +17,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -308,30 +308,56 @@ public class MainActivity extends Activity {
                     ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             );
 
-            // Root layout.
+            // =========================================================
+            // ROOT
+            // =========================================================
+
             LinearLayout root = new LinearLayout(this);
-            root.setOrientation(LinearLayout.HORIZONTAL);
-            root.setGravity(Gravity.CENTER);
-            root.setPadding(60, 35, 60, 35);
+            root.setOrientation(LinearLayout.VERTICAL);
+            root.setGravity(Gravity.CENTER_HORIZONTAL);
+            root.setPadding(40, 25, 40, 25);
             root.setBackgroundColor(Color.BLACK);
 
-            // Left side: icon.
+            // =========================================================
+            // MAIN CONTENT
+            // =========================================================
+
+            LinearLayout content = new LinearLayout(this);
+            content.setOrientation(LinearLayout.HORIZONTAL);
+            content.setGravity(Gravity.CENTER_VERTICAL);
+
+            root.addView(
+                    content,
+                    new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            0,
+                            1
+                    )
+            );
+
+            // =========================================================
+            // LEFT SIDE
+            // icon.png + title + author
+            // =========================================================
+
             LinearLayout left = new LinearLayout(this);
             left.setOrientation(LinearLayout.VERTICAL);
-            left.setGravity(Gravity.CENTER);
+            left.setGravity(Gravity.CENTER_HORIZONTAL);
 
+            // Large PS3 PKG Launcher icon.
             ImageView icon = new ImageView(this);
-            icon.setImageResource(R.mipmap.ic_launcher);
+            icon.setImageResource(R.drawable.icon);
             icon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
             left.addView(
                     icon,
                     new LinearLayout.LayoutParams(
-                            260,
-                            260
+                            360,
+                            300
                     )
             );
 
+            // App name.
             TextView title = new TextView(this);
             title.setText("PS3 PKG Launcher");
             title.setTextColor(Color.WHITE);
@@ -342,23 +368,45 @@ public class MainActivity extends Activity {
             left.addView(
                     title,
                     new LinearLayout.LayoutParams(
-                            300,
+                            LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT
                     )
             );
 
-            root.addView(
+            // Author.
+            TextView author = new TextView(this);
+            author.setText("by N30RYU");
+            author.setTextColor(Color.LTGRAY);
+            author.setTextSize(17);
+            author.setGravity(Gravity.CENTER);
+
+            LinearLayout.LayoutParams authorParams =
+                    new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                    );
+
+            authorParams.setMargins(0, 4, 0, 0);
+
+            left.addView(author, authorParams);
+
+            content.addView(
                     left,
                     new LinearLayout.LayoutParams(
-                            330,
+                            390,
                             LinearLayout.LayoutParams.MATCH_PARENT
                     )
             );
 
-            // Right side.
+            // =========================================================
+            // RIGHT SIDE
+            // Description + command + COPY COMMAND
+            // =========================================================
+
             LinearLayout right = new LinearLayout(this);
             right.setOrientation(LinearLayout.VERTICAL);
             right.setGravity(Gravity.CENTER_VERTICAL);
+            right.setPadding(35, 0, 10, 0);
 
             TextView description = new TextView(this);
 
@@ -369,7 +417,7 @@ public class MainActivity extends Activity {
             );
 
             description.setTextColor(Color.LTGRAY);
-            description.setTextSize(18);
+            description.setTextSize(17);
             description.setGravity(Gravity.CENTER_VERTICAL);
 
             right.addView(
@@ -380,35 +428,61 @@ public class MainActivity extends Activity {
                     )
             );
 
+            // =========================================================
+            // COMMAND + COPY BUTTON
+            // =========================================================
+
+            LinearLayout commandRow = new LinearLayout(this);
+            commandRow.setOrientation(LinearLayout.HORIZONTAL);
+            commandRow.setGravity(Gravity.CENTER_VERTICAL);
+
+            LinearLayout.LayoutParams commandRowParams =
+                    new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            90
+                    );
+
+            commandRowParams.setMargins(0, 18, 0, 0);
+
             // Command box.
             TextView command = new TextView(this);
 
             command.setText(BEACON_COMMAND);
             command.setTextColor(Color.WHITE);
-            command.setTextSize(15);
+            command.setTextSize(13);
             command.setTypeface(Typeface.MONOSPACE);
             command.setGravity(Gravity.CENTER_VERTICAL);
-            command.setPadding(20, 15, 20, 15);
+            command.setPadding(18, 10, 18, 10);
             command.setBackgroundColor(Color.rgb(30, 30, 30));
 
-            LinearLayout.LayoutParams commandParams =
+            commandRow.addView(
+                    command,
                     new LinearLayout.LayoutParams(
+                            0,
                             LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT
+                            1
+                    )
+            );
+
+            // Copy button.
+            Button copyButton = new Button(this);
+            copyButton.setText("COPY COMMAND");
+            copyButton.setTextSize(15);
+            copyButton.setAllCaps(false);
+            copyButton.setGravity(Gravity.CENTER);
+            copyButton.setMinHeight(72);
+            copyButton.setMinimumHeight(72);
+            copyButton.setPadding(20, 0, 20, 0);
+
+            LinearLayout.LayoutParams copyParams =
+                    new LinearLayout.LayoutParams(
+                            210,
+                            72
                     );
 
-            commandParams.setMargins(0, 20, 0, 20);
+            copyParams.setMargins(15, 0, 0, 0);
 
-            right.addView(command, commandParams);
-
-            // Buttons.
-            LinearLayout buttons = new LinearLayout(this);
-            buttons.setOrientation(LinearLayout.HORIZONTAL);
-            buttons.setGravity(Gravity.CENTER);
-
-            Button copyButton = new Button(this);
-            copyButton.setText("Copy Command");
-            copyButton.setTextSize(16);
+            commandRow.addView(copyButton, copyParams);
 
             copyButton.setOnClickListener(v -> {
 
@@ -432,28 +506,9 @@ public class MainActivity extends Activity {
                 ).show();
             });
 
-            Button closeButton = new Button(this);
-            closeButton.setText("Close");
-            closeButton.setTextSize(16);
+            right.addView(commandRow, commandRowParams);
 
-            closeButton.setOnClickListener(v ->
-                    finishAndRemoveTask()
-            );
-
-            LinearLayout.LayoutParams buttonParams =
-                    new LinearLayout.LayoutParams(
-                            220,
-                            65
-                    );
-
-            buttonParams.setMargins(10, 0, 10, 0);
-
-            buttons.addView(copyButton, buttonParams);
-            buttons.addView(closeButton, buttonParams);
-
-            right.addView(buttons);
-
-            root.addView(
+            content.addView(
                     right,
                     new LinearLayout.LayoutParams(
                             0,
@@ -461,6 +516,36 @@ public class MainActivity extends Activity {
                             1
                     )
             );
+
+            // =========================================================
+            // CLOSE BUTTON
+            // Centered across the whole screen.
+            // =========================================================
+
+            Button closeButton = new Button(this);
+
+            closeButton.setText("CLOSE");
+            closeButton.setTextSize(16);
+            closeButton.setAllCaps(false);
+            closeButton.setGravity(Gravity.CENTER);
+            closeButton.setMinHeight(70);
+            closeButton.setMinimumHeight(70);
+            closeButton.setPadding(30, 0, 30, 0);
+
+            closeButton.setOnClickListener(v ->
+                    finishAndRemoveTask()
+            );
+
+            LinearLayout.LayoutParams closeParams =
+                    new LinearLayout.LayoutParams(
+                            240,
+                            70
+                    );
+
+            closeParams.gravity = Gravity.CENTER_HORIZONTAL;
+            closeParams.setMargins(0, 12, 0, 5);
+
+            root.addView(closeButton, closeParams);
 
             setContentView(root);
         });
@@ -481,3 +566,4 @@ public class MainActivity extends Activity {
         runOnUiThread(this::finishAndRemoveTask);
     }
 }
+```
