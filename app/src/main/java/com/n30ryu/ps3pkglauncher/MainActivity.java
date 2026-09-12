@@ -299,7 +299,253 @@ public class MainActivity extends Activity {
         });
     }
 
-private void showWelcomeScreen() { runOnUiThread(() -> { setRequestedOrientation( ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE ); // ========================================================= // ROOT // ========================================================= LinearLayout root = new LinearLayout(this); root.setOrientation(LinearLayout.VERTICAL); root.setGravity(Gravity.CENTER_HORIZONTAL); root.setPadding(45, 20, 45, 20); root.setBackgroundColor(Color.BLACK); // ========================================================= // MAIN CONTENT // ========================================================= LinearLayout content = new LinearLayout(this); content.setOrientation(LinearLayout.HORIZONTAL); content.setGravity(Gravity.CENTER); content.setWeightSum(10); root.addView( content, new LinearLayout.LayoutParams( LinearLayout.LayoutParams.MATCH_PARENT, 0, 1 ) ); // ========================================================= // LEFT // ========================================================= LinearLayout left = new LinearLayout(this); left.setOrientation(LinearLayout.VERTICAL); left.setGravity(Gravity.CENTER_HORIZONTAL); // Large icon.png ImageView icon = new ImageView(this); icon.setImageResource(R.drawable.icon); icon.setScaleType(ImageView.ScaleType.CENTER_INSIDE); left.addView( icon, new LinearLayout.LayoutParams( 340, 280 ) ); // PS3 PKG Launcher TextView title = new TextView(this); title.setText("PS3 PKG Launcher"); title.setTextColor(Color.WHITE); title.setTextSize(24); title.setTypeface(Typeface.DEFAULT, Typeface.BOLD); title.setGravity(Gravity.CENTER); left.addView( title, new LinearLayout.LayoutParams( LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT ) ); // by N30RYU TextView author = new TextView(this); author.setText("by N30RYU"); author.setTextColor(Color.LTGRAY); author.setTextSize(16); author.setGravity(Gravity.CENTER); left.addView( author, new LinearLayout.LayoutParams( LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT ) ); LinearLayout.LayoutParams leftParams = new LinearLayout.LayoutParams( 390, LinearLayout.LayoutParams.MATCH_PARENT ); leftParams.gravity = Gravity.CENTER_VERTICAL; content.addView(left, leftParams); // ========================================================= // RIGHT // ========================================================= LinearLayout right = new LinearLayout(this); right.setOrientation(LinearLayout.VERTICAL); right.setGravity(Gravity.CENTER_VERTICAL); right.setPadding(35, 0, 0, 0); TextView description = new TextView(this); description.setText( "This app is designed to be used with Beacon Launcher.\n\n" + "In Beacon, select PS3 PKG Launcher as your PS3 application, " + "enable Custom Launch, and use this command:" ); description.setTextColor(Color.LTGRAY); description.setTextSize(17); description.setGravity(Gravity.CENTER_VERTICAL); right.addView( description, new LinearLayout.LayoutParams( LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT ) ); // ========================================================= // COMMAND + COPY // ========================================================= LinearLayout commandRow = new LinearLayout(this); commandRow.setOrientation(LinearLayout.HORIZONTAL); commandRow.setGravity(Gravity.CENTER_VERTICAL); LinearLayout.LayoutParams commandRowParams = new LinearLayout.LayoutParams( LinearLayout.LayoutParams.MATCH_PARENT, 78 ); commandRowParams.setMargins(0, 18, 0, 0); TextView command = new TextView(this); command.setText(BEACON_COMMAND); command.setTextColor(Color.WHITE); command.setTextSize(12); command.setTypeface(Typeface.MONOSPACE); command.setGravity(Gravity.CENTER_VERTICAL); command.setPadding(15, 0, 15, 0); command.setBackgroundColor(Color.rgb(30, 30, 30)); commandRow.addView( command, new LinearLayout.LayoutParams( 0, LinearLayout.LayoutParams.MATCH_PARENT, 1 ) ); Button copyButton = new Button(this); copyButton.setText("COPY"); copyButton.setTextSize(16); copyButton.setAllCaps(false); copyButton.setGravity(Gravity.CENTER); copyButton.setMinHeight(68); copyButton.setMinimumHeight(68); LinearLayout.LayoutParams copyParams = new LinearLayout.LayoutParams( 150, 68 ); copyParams.setMargins(15, 0, 0, 0); commandRow.addView(copyButton, copyParams); copyButton.setOnClickListener(v -> { ClipboardManager clipboard = (ClipboardManager) getSystemService( Context.CLIPBOARD_SERVICE ); ClipData clip = ClipData.newPlainText( "Beacon Custom Launch", BEACON_COMMAND ); clipboard.setPrimaryClip(clip); Toast.makeText( this, "Command copied to clipboard.", Toast.LENGTH_SHORT ).show(); }); right.addView(commandRow, commandRowParams); LinearLayout.LayoutParams rightParams = new LinearLayout.LayoutParams( 0, LinearLayout.LayoutParams.MATCH_PARENT, 6 ); rightParams.gravity = Gravity.CENTER_VERTICAL; content.addView(right, rightParams); // ========================================================= // CLOSE // ========================================================= Button closeButton = new Button(this); closeButton.setText("CLOSE"); closeButton.setTextSize(16); closeButton.setAllCaps(false); closeButton.setGravity(Gravity.CENTER); closeButton.setMinHeight(68); closeButton.setMinimumHeight(68); closeButton.setOnClickListener(v -> finishAndRemoveTask() ); LinearLayout.LayoutParams closeParams = new LinearLayout.LayoutParams( 220, 68 ); closeParams.gravity = Gravity.CENTER_HORIZONTAL; closeParams.setMargins(0, 10, 0, 0); root.addView(closeButton, closeParams); setContentView(root); }); }
+private void showWelcomeScreen() {
+
+    runOnUiThread(() -> {
+
+        setRequestedOrientation(
+                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        );
+
+        // =========================================================
+        // ROOT
+        // =========================================================
+
+        LinearLayout root = new LinearLayout(this);
+        root.setOrientation(LinearLayout.VERTICAL);
+        root.setGravity(Gravity.CENTER_HORIZONTAL);
+        root.setPadding(45, 20, 45, 20);
+        root.setBackgroundColor(Color.BLACK);
+
+        // =========================================================
+        // MAIN CONTENT
+        // =========================================================
+
+        LinearLayout content = new LinearLayout(this);
+        content.setOrientation(LinearLayout.HORIZONTAL);
+        content.setGravity(Gravity.CENTER);
+        content.setWeightSum(10);
+
+        root.addView(
+                content,
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        0,
+                        1
+                )
+        );
+
+        // =========================================================
+        // LEFT
+        // =========================================================
+
+        LinearLayout left = new LinearLayout(this);
+        left.setOrientation(LinearLayout.VERTICAL);
+        left.setGravity(Gravity.CENTER_HORIZONTAL);
+
+        // Large icon.png
+        ImageView icon = new ImageView(this);
+        icon.setImageResource(R.drawable.icon);
+        icon.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+
+        left.addView(
+                icon,
+                new LinearLayout.LayoutParams(
+                        340,
+                        280
+                )
+        );
+
+        // PS3 PKG Launcher
+        TextView title = new TextView(this);
+        title.setText("PS3 PKG Launcher");
+        title.setTextColor(Color.WHITE);
+        title.setTextSize(24);
+        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        title.setGravity(Gravity.CENTER);
+
+        left.addView(
+                title,
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+        );
+
+        // by N30RYU
+        TextView author = new TextView(this);
+        author.setText("by N30RYU");
+        author.setTextColor(Color.LTGRAY);
+        author.setTextSize(16);
+        author.setGravity(Gravity.CENTER);
+
+        left.addView(
+                author,
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+        );
+
+        LinearLayout.LayoutParams leftParams =
+                new LinearLayout.LayoutParams(
+                        390,
+                        LinearLayout.LayoutParams.MATCH_PARENT
+                );
+
+        leftParams.gravity = Gravity.CENTER_VERTICAL;
+
+        content.addView(left, leftParams);
+
+        // =========================================================
+        // RIGHT
+        // =========================================================
+
+        LinearLayout right = new LinearLayout(this);
+        right.setOrientation(LinearLayout.VERTICAL);
+        right.setGravity(Gravity.CENTER_VERTICAL);
+        right.setPadding(35, 0, 0, 0);
+
+        TextView description = new TextView(this);
+
+        description.setText(
+                "This app is designed to be used with Beacon Launcher.\n\n" +
+                "In Beacon, select PS3 PKG Launcher as your PS3 application, " +
+                "enable Custom Launch, and use this command:"
+        );
+
+        description.setTextColor(Color.LTGRAY);
+        description.setTextSize(17);
+        description.setGravity(Gravity.CENTER_VERTICAL);
+
+        right.addView(
+                description,
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+        );
+
+        // =========================================================
+        // COMMAND + COPY
+        // =========================================================
+
+        LinearLayout commandRow = new LinearLayout(this);
+        commandRow.setOrientation(LinearLayout.HORIZONTAL);
+        commandRow.setGravity(Gravity.CENTER_VERTICAL);
+
+        LinearLayout.LayoutParams commandRowParams =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        78
+                );
+
+        commandRowParams.setMargins(0, 18, 0, 0);
+
+        TextView command = new TextView(this);
+
+        command.setText(BEACON_COMMAND);
+        command.setTextColor(Color.WHITE);
+        command.setTextSize(12);
+        command.setTypeface(Typeface.MONOSPACE);
+        command.setGravity(Gravity.CENTER_VERTICAL);
+        command.setPadding(15, 0, 15, 0);
+        command.setBackgroundColor(Color.rgb(30, 30, 30));
+
+        commandRow.addView(
+                command,
+                new LinearLayout.LayoutParams(
+                        0,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        1
+                )
+        );
+
+        Button copyButton = new Button(this);
+
+        copyButton.setText("COPY");
+        copyButton.setTextSize(16);
+        copyButton.setAllCaps(false);
+        copyButton.setGravity(Gravity.CENTER);
+        copyButton.setMinHeight(68);
+        copyButton.setMinimumHeight(68);
+
+        LinearLayout.LayoutParams copyParams =
+                new LinearLayout.LayoutParams(
+                        150,
+                        68
+                );
+
+        copyParams.setMargins(15, 0, 0, 0);
+
+        commandRow.addView(copyButton, copyParams);
+
+        copyButton.setOnClickListener(v -> {
+
+            ClipboardManager clipboard =
+                    (ClipboardManager) getSystemService(
+                            Context.CLIPBOARD_SERVICE
+                    );
+
+            ClipData clip =
+                    ClipData.newPlainText(
+                            "Beacon Custom Launch",
+                            BEACON_COMMAND
+                    );
+
+            clipboard.setPrimaryClip(clip);
+
+            Toast.makeText(
+                    this,
+                    "Command copied to clipboard.",
+                    Toast.LENGTH_SHORT
+            ).show();
+        });
+
+        right.addView(commandRow, commandRowParams);
+
+        LinearLayout.LayoutParams rightParams =
+                new LinearLayout.LayoutParams(
+                        0,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        6
+                );
+
+        rightParams.gravity = Gravity.CENTER_VERTICAL;
+
+        content.addView(right, rightParams);
+
+        // =========================================================
+        // CLOSE
+        // =========================================================
+
+        Button closeButton = new Button(this);
+
+        closeButton.setText("CLOSE");
+        closeButton.setTextSize(16);
+        closeButton.setAllCaps(false);
+        closeButton.setGravity(Gravity.CENTER);
+        closeButton.setMinHeight(68);
+        closeButton.setMinimumHeight(68);
+
+        closeButton.setOnClickListener(v ->
+                finishAndRemoveTask()
+        );
+
+        LinearLayout.LayoutParams closeParams =
+                new LinearLayout.LayoutParams(
+                        220,
+                        68
+                );
+
+        closeParams.gravity = Gravity.CENTER_HORIZONTAL;
+        closeParams.setMargins(0, 10, 0, 0);
+
+        root.addView(closeButton, closeParams);
+
+        setContentView(root);
+    });
+}
 
     private void toast(String message) {
 
