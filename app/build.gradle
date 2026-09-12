@@ -1,5 +1,5 @@
 plugins { id 'com.android.application' }
 
-android { namespace 'com.raul.ps3pkglauncher'; compileSdk 35
-    defaultConfig { applicationId 'com.raul.ps3pkglauncher'; minSdk 23; targetSdk 35; versionCode 1; versionName '1.0' }
+android { namespace 'com.n30ryu.ps3pkglauncher'; compileSdk 35
+    defaultConfig { applicationId 'com.n30ryu.ps3pkglauncher'; minSdk 23; targetSdk 35; versionCode 1; versionName '1.0' }
 }
