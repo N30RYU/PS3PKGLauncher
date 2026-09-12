@@ -1,4 +1,3 @@
-```java
 package com.n30ryu.ps3pkglauncher;
 
 import android.app.Activity;
@@ -566,4 +565,3 @@ public class MainActivity extends Activity {
         runOnUiThread(this::finishAndRemoveTask);
     }
 }
-```
