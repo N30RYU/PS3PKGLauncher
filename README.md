@@ -76,18 +76,27 @@ That's it.
 
 ## How it works
 
+The launcher checks the size of the selected `.iso` file:
+
 ```text
 Beacon
    ↓
-RAIN.iso
-   ↓
 PS3 PKG Launcher
    ↓
-Reads NPEA00394
-   ↓
-ARMSX3
-   ↓
-Installed Rain PKG/RAP game
+Is the ISO smaller than 100 KB?
+   │
+   ├── YES → Read it as a text file
+   │           ↓
+   │        Extract the Title ID
+   │           ↓
+   │        Launch the installed game through ARMSX3
+   │
+   └── NO → Treat it as a real ISO
+               ↓
+            Open it directly with ARMSX3
 ```
 
-Normal PS3 ISOs are also supported and are launched directly through ARMSX3.
+In other words:
+
+* **Under 100 KB** → the file is treated as a fake ISO containing the game's Title ID.
+* **Over 100 KB** → the file is treated as a real PS3 ISO and opened directly with ARMSX3.
