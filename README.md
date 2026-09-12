@@ -2,7 +2,7 @@
   <img src=".github/icon.png" width="180" alt="ARMSX3PKGISOLauncher">
 </p>
 
-<h1 align="center">ARMSX3PKGISOLauncher</h1>
+<h1 align="center">PS3 PKG Launcher</h1>
 
 <p align="center">
   Launcher for ARMSX3 games from Beacon
