@@ -4,198 +4,272 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.net.Uri;
-import android.graphics.Color;
-import android.view.Gravity;
-import android.view.ViewGroup;
-import android.widget.ScrollView;
-import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainActivity extends Activity {
+
+    private static final String ARMSX3_ACTIVITY =
+            "com.armsx3/com.armsx2.MainActivity";
+
+    // Archivos de hasta 100 KB se consideran marcadores de PKG.
+    private static final long MARKER_MAX_SIZE = 100 * 1024;
+
+    private static final Pattern TITLE_ID =
+            Pattern.compile("\\b[A-Za-z0-9]{4}\\d{5}\\b");
 
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
-        showDiagnostic(getIntent());
+        handleIntent(getIntent());
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-        showDiagnostic(intent);
+        handleIntent(intent);
     }
 
-    private void showDiagnostic(Intent intent) {
+    private void handleIntent(Intent intent) {
 
-        StringBuilder info = new StringBuilder();
+        new Thread(() -> {
 
-        info.append("=== PS3 PKG LAUNCHER DIAGNOSTIC ===\n\n");
+            try {
 
-        info.append("ACTION:\n");
-        info.append(String.valueOf(intent.getAction()));
-        info.append("\n\n");
+                String filePath = getFilePath(intent);
 
-        info.append("DATA:\n");
-        info.append(String.valueOf(intent.getDataString()));
-        info.append("\n\n");
+                if (filePath == null || filePath.trim().isEmpty()) {
+                    toast("PS3 PKG Launcher: no se recibió file_path");
+                    finishSafe();
+                    return;
+                }
 
-        info.append("TYPE:\n");
-        info.append(String.valueOf(intent.getType()));
-        info.append("\n\n");
+                File file = new File(filePath);
 
-        info.append("FLAGS:\n0x");
-        info.append(Integer.toHexString(intent.getFlags()));
-        info.append("\n\n");
+                if (!file.exists()) {
+                    toast("Archivo no encontrado:\n" + filePath);
+                    finishSafe();
+                    return;
+                }
 
-        info.append("COMPONENT:\n");
-        info.append(String.valueOf(intent.getComponent()));
-        info.append("\n\n");
+                long size = file.length();
 
-        info.append("PACKAGE:\n");
-        info.append(String.valueOf(intent.getPackage()));
-        info.append("\n\n");
+                if (size > MARKER_MAX_SIZE) {
 
-        info.append("REFERRER:\n");
-        try {
-            info.append(String.valueOf(getReferrer()));
-        } catch (Exception e) {
-            info.append("ERROR: ").append(e.getMessage());
+                    // ISO PS3 real → abrir directamente en ARMSX3.
+                    launchArmsx3Iso(filePath);
+
+                } else {
+
+                    // Archivo pequeño → leer Title ID.
+                    String text = readText(file);
+
+                    String titleId = extractTitleId(text);
+
+                    if (titleId == null) {
+                        toast("No se encontró Title ID en:\n" + file.getName());
+                        finishSafe();
+                        return;
+                    }
+
+                    launchArmsx3TitleId(titleId);
+                }
+
+            } catch (Exception e) {
+
+                toast("PS3 PKG Launcher:\n" +
+                        (e.getMessage() != null
+                                ? e.getMessage()
+                                : "error desconocido"));
+
+                finishSafe();
+            }
+
+        }).start();
+    }
+
+    private String getFilePath(Intent intent) {
+
+        // Nuestro método principal desde Beacon:
+        String path = intent.getStringExtra("file_path");
+
+        if (path != null && !path.trim().isEmpty()) {
+            return normalizePath(path);
         }
-        info.append("\n\n");
 
-        info.append("CATEGORIES:\n");
-        if (intent.getCategories() == null) {
-            info.append("NONE\n");
-        } else {
-            for (String category : intent.getCategories()) {
-                info.append(category).append("\n");
+        // Compatibilidad con otras formas de lanzamiento.
+        Uri uri = intent.getData();
+
+        if (uri != null) {
+
+            if ("file".equalsIgnoreCase(uri.getScheme())) {
+                return uri.getPath();
+            }
+
+            if (uri.getScheme() == null) {
+                return uri.toString();
             }
         }
-        info.append("\n");
 
-        info.append("EXTRA_STREAM:\n");
-        try {
-            info.append(String.valueOf(
-                    intent.getParcelableExtra(Intent.EXTRA_STREAM)
-            ));
-        } catch (Exception e) {
-            info.append("ERROR: ").append(e.getMessage());
+        String[] keys = {
+                "path",
+                "game_path",
+                "rom_path",
+                "file",
+                "file_uri",
+                "uri"
+        };
+
+        for (String key : keys) {
+
+            String value = intent.getStringExtra(key);
+
+            if (value != null && !value.trim().isEmpty()) {
+                return normalizePath(value);
+            }
         }
-        info.append("\n\n");
 
-        info.append("EXTRA_TEXT:\n");
-        try {
-            info.append(String.valueOf(
-                    intent.getCharSequenceExtra(Intent.EXTRA_TEXT)
-            ));
-        } catch (Exception e) {
-            info.append("ERROR: ").append(e.getMessage());
+        return null;
+    }
+
+    private String normalizePath(String path) {
+
+        path = path.trim();
+
+        if (path.startsWith("file://")) {
+            return Uri.parse(path).getPath();
         }
-        info.append("\n\n");
 
-        info.append("ALL EXTRAS:\n");
+        return path;
+    }
 
-        Bundle extras = intent.getExtras();
+    private String readText(File file) throws Exception {
 
-        if (extras == null || extras.isEmpty()) {
-            info.append("NO EXTRAS\n");
-        } else {
-            for (String key : extras.keySet()) {
-                info.append("\n");
-                info.append(key);
-                info.append(" = ");
+        try (InputStream input = new FileInputStream(file);
+             ByteArrayOutputStream output = new ByteArrayOutputStream()) {
 
-                try {
-                    Object value = extras.get(key);
-                    info.append(String.valueOf(value));
-                } catch (Exception e) {
-                    info.append("ERROR: ");
-                    info.append(e.getMessage());
+            byte[] buffer = new byte[4096];
+
+            int read;
+
+            while ((read = input.read(buffer)) != -1) {
+
+                output.write(buffer, 0, read);
+
+                if (output.size() > MARKER_MAX_SIZE) {
+                    break;
                 }
             }
-            info.append("\n");
+
+            return new String(
+                    output.toByteArray(),
+                    StandardCharsets.UTF_8
+            );
+        }
+    }
+
+    private String extractTitleId(String text) {
+
+        if (text == null) {
+            return null;
         }
 
-        info.append("\n");
-        info.append("=== PS3 DIRECTORY ===\n\n");
+        Matcher matcher =
+                TITLE_ID.matcher(text.toUpperCase(Locale.ROOT));
 
-        File ps3Dir = new File(
-                "/storage/emulated/0/roms/ps3/"
-        );
+        if (matcher.find()) {
+            return matcher.group().toUpperCase(Locale.ROOT);
+        }
 
-        info.append("EXISTS: ");
-        info.append(ps3Dir.exists());
-        info.append("\n");
+        return null;
+    }
 
-        info.append("READABLE: ");
-        info.append(ps3Dir.canRead());
-        info.append("\n\n");
+    private void launchArmsx3Iso(String filePath) {
 
-        if (ps3Dir.exists() && ps3Dir.isDirectory()) {
+        runOnUiThread(() -> {
 
-            File[] files = ps3Dir.listFiles();
+            try {
 
-            if (files == null) {
-                info.append("listFiles() = NULL\n");
-            } else {
+                Intent launch = new Intent(Intent.ACTION_MAIN);
 
-                Arrays.sort(
-                        files,
-                        Comparator.comparing(File::getName)
+                launch.setComponent(
+                        android.content.ComponentName
+                                .unflattenFromString(ARMSX3_ACTIVITY)
                 );
 
-                for (File file : files) {
+                launch.putExtra("path", filePath);
+                launch.putExtra("file_path", filePath);
 
-                    if (file.getName()
-                            .toLowerCase()
-                            .endsWith(".iso")) {
+                launch.addFlags(
+                        Intent.FLAG_ACTIVITY_NEW_TASK |
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP
+                );
 
-                        info.append(file.getName());
-                        info.append("\n");
+                startActivity(launch);
 
-                        info.append("  path: ");
-                        info.append(file.getAbsolutePath());
-                        info.append("\n");
+                finish();
 
-                        info.append("  size: ");
-                        info.append(file.length());
-                        info.append("\n");
+            } catch (Exception e) {
 
-                        info.append("  modified: ");
-                        info.append(file.lastModified());
-                        info.append("\n\n");
-                    }
-                }
+                toast("No se pudo abrir el ISO en ARMSX3");
+                finish();
             }
-        }
+        });
+    }
 
-        info.append("=== END DIAGNOSTIC ===");
+    private void launchArmsx3TitleId(String titleId) {
 
-        TextView tv = new TextView(this);
+        runOnUiThread(() -> {
 
-        tv.setText(info.toString());
-        tv.setTextSize(15);
-        tv.setTextColor(Color.WHITE);
-        tv.setPadding(30, 30, 30, 30);
-        tv.setGravity(Gravity.START);
-        tv.setTextIsSelectable(true);
+            try {
 
-        ScrollView scroll = new ScrollView(this);
+                Intent launch = new Intent(Intent.ACTION_MAIN);
 
-        scroll.setBackgroundColor(Color.BLACK);
+                launch.setComponent(
+                        android.content.ComponentName
+                                .unflattenFromString(ARMSX3_ACTIVITY)
+                );
 
-        scroll.addView(
-                tv,
-                new ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                )
+                launch.putExtra("title_id", titleId);
+
+                launch.addFlags(
+                        Intent.FLAG_ACTIVITY_NEW_TASK |
+                        Intent.FLAG_ACTIVITY_CLEAR_TOP
+                );
+
+                startActivity(launch);
+
+                finish();
+
+            } catch (Exception e) {
+
+                toast("No se pudo abrir ARMSX3");
+                finish();
+            }
+        });
+    }
+
+    private void toast(String message) {
+
+        runOnUiThread(() ->
+                Toast.makeText(
+                        this,
+                        message,
+                        Toast.LENGTH_LONG
+                ).show()
         );
+    }
 
-        setContentView(scroll);
+    private void finishSafe() {
+        runOnUiThread(this::finish);
     }
 }
