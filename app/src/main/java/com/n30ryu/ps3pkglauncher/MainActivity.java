@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends Activity {
 
-```
 private static final String ARMSX3_ACTIVITY =
         "com.armsx3/com.armsx2.MainActivity";
 
@@ -388,5 +387,167 @@ private void showWelcomeScreen() {
             0
     );
 
-    commandRo
-```
+    commandRow.addView(
+            copyButton,
+            copyParams
+    );
+
+    copyButton.setOnClickListener(v -> {
+
+        ClipboardManager clipboard =
+                (ClipboardManager)
+                        getSystemService(Context.CLIPBOARD_SERVICE);
+
+        ClipData clip =
+                ClipData.newPlainText(
+                        "Beacon Custom Launch",
+                        BEACON_COMMAND
+                );
+
+        clipboard.setPrimaryClip(clip);
+
+        Toast.makeText(
+                this,
+                "Command copied to clipboard.",
+                Toast.LENGTH_SHORT
+        ).show();
+    });
+
+    // IMPORTANT:
+    // Declare commandRowParams BEFORE using it.
+
+    LinearLayout.LayoutParams commandRowParams =
+            new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    86
+            );
+
+    commandRowParams.setMargins(
+            0,
+            30,
+            0,
+            0
+    );
+
+    right.addView(
+            commandRow,
+            commandRowParams
+    );
+
+    LinearLayout.LayoutParams rightParams =
+            new LinearLayout.LayoutParams(
+                    0,
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    6
+            );
+
+    rightParams.gravity = Gravity.CENTER_VERTICAL;
+
+    content.addView(
+            right,
+            rightParams
+    );
+
+    // ---------------------------------------------------------
+    // CLOSE BUTTON
+    // ---------------------------------------------------------
+
+    Button closeButton = new Button(this);
+
+    closeButton.setText("CLOSE");
+    closeButton.setTextSize(16);
+    closeButton.setAllCaps(false);
+    closeButton.setGravity(Gravity.CENTER);
+
+    closeButton.setMinHeight(86);
+    closeButton.setMinimumHeight(86);
+
+    closeButton.setOnClickListener(v ->
+            finishAndRemoveTask()
+    );
+
+    LinearLayout.LayoutParams closeParams =
+            new LinearLayout.LayoutParams(
+                    240,
+                    86
+            );
+
+    closeParams.gravity = Gravity.CENTER_HORIZONTAL;
+
+    closeParams.setMargins(
+            0,
+            0,
+            0,
+            20
+    );
+
+    root.addView(
+            closeButton,
+            closeParams
+    );
+
+    setContentView(root);
+}
+
+private void showError(String message) {
+
+    LinearLayout root = new LinearLayout(this);
+
+    root.setOrientation(LinearLayout.VERTICAL);
+    root.setGravity(Gravity.CENTER);
+    root.setPadding(
+            50,
+            50,
+            50,
+            50
+    );
+
+    root.setBackgroundColor(Color.BLACK);
+
+    TextView error = new TextView(this);
+
+    error.setText(message);
+    error.setTextColor(Color.WHITE);
+    error.setTextSize(17);
+    error.setGravity(Gravity.CENTER);
+
+    root.addView(
+            error,
+            new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+    );
+
+    Button close = new Button(this);
+
+    close.setText("CLOSE");
+    close.setTextSize(16);
+    close.setAllCaps(false);
+
+    close.setOnClickListener(v ->
+            finishAndRemoveTask()
+    );
+
+    LinearLayout.LayoutParams closeParams =
+            new LinearLayout.LayoutParams(
+                    220,
+                    72
+            );
+
+    closeParams.setMargins(
+            0,
+            30,
+            0,
+            0
+    );
+
+    root.addView(
+            close,
+            closeParams
+    );
+
+    setContentView(root);
+}
+
+}
