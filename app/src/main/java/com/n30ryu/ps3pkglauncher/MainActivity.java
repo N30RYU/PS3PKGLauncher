@@ -550,7 +550,7 @@ private void showError(String message) {
 }
 
 private void finishAndRemoveTask() {
-    finishAndRemoveTask();
+    super.finishAndRemoveTask();
 }
 
 }
