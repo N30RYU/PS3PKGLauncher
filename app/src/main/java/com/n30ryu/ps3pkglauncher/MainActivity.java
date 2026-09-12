@@ -333,12 +333,6 @@ private void showWelcomeScreen() {
     LinearLayout commandRow = new LinearLayout(this);
     commandRow.setOrientation(LinearLayout.HORIZONTAL);
     commandRow.setGravity(Gravity.CENTER_VERTICAL);
-        commandRowParams.setMargins(
-        0,
-        30,
-        0,
-        0
-);
 
     TextView command = new TextView(this);
 
@@ -367,7 +361,12 @@ LinearLayout.LayoutParams commandParams =
                 86,
                 1
         );
-
+        commandRowParams.setMargins(
+        0,
+        30,
+        0,
+        0
+);
     commandRow.addView(
             command,
             commandParams
