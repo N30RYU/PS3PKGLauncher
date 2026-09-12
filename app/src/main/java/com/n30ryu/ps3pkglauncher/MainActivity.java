@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends Activity {
 
-```
 private static final String ARMSX3_ACTIVITY =
         "com.armsx3/com.armsx2.MainActivity";
 
