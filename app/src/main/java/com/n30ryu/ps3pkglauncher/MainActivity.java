@@ -333,12 +333,20 @@ private void showWelcomeScreen() {
     LinearLayout commandRow = new LinearLayout(this);
     commandRow.setOrientation(LinearLayout.HORIZONTAL);
     commandRow.setGravity(Gravity.CENTER_VERTICAL);
+        commandRowParams.setMargins(
+        0,
+        30,
+        0,
+        0
+);
 
     TextView command = new TextView(this);
 
     command.setText(BEACON_COMMAND);
     command.setTextColor(Color.WHITE);
     command.setTextSize(12);
+    command.setSingleLine(false);
+    command.setMaxLines(2);
     command.setTypeface(Typeface.MONOSPACE);
     command.setGravity(Gravity.CENTER_VERTICAL);
 
@@ -353,12 +361,12 @@ private void showWelcomeScreen() {
             Color.rgb(30, 30, 30)
     );
 
-    LinearLayout.LayoutParams commandParams =
-            new LinearLayout.LayoutParams(
-                    0,
-                    72,
-                    1
-            );
+LinearLayout.LayoutParams commandParams =
+        new LinearLayout.LayoutParams(
+                0,
+                86,
+                1
+        );
 
     commandRow.addView(
             command,
@@ -372,13 +380,13 @@ private void showWelcomeScreen() {
     copyButton.setAllCaps(false);
     copyButton.setGravity(Gravity.CENTER);
 
-    copyButton.setMinHeight(72);
-    copyButton.setMinimumHeight(72);
+    copyButton.setMinHeight(86);
+    copyButton.setMinimumHeight(86);
 
     LinearLayout.LayoutParams copyParams =
             new LinearLayout.LayoutParams(
-                    180,
-                    72
+                    190,
+                    86
             );
 
     copyParams.setMargins(
@@ -417,7 +425,7 @@ private void showWelcomeScreen() {
     LinearLayout.LayoutParams commandRowParams =
             new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    72
+                    86
             );
 
     commandRowParams.setMargins(
@@ -457,8 +465,8 @@ private void showWelcomeScreen() {
     closeButton.setAllCaps(false);
     closeButton.setGravity(Gravity.CENTER);
 
-    closeButton.setMinHeight(72);
-    closeButton.setMinimumHeight(72);
+    closeButton.setMinHeight(86);
+    closeButton.setMinimumHeight(86);
 
     closeButton.setOnClickListener(v ->
             finishAndRemoveTask()
@@ -466,8 +474,8 @@ private void showWelcomeScreen() {
 
     LinearLayout.LayoutParams closeParams =
             new LinearLayout.LayoutParams(
-                    220,
-                    72
+                    240,
+                    86
             );
 
     closeParams.gravity = Gravity.CENTER_HORIZONTAL;
