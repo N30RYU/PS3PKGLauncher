@@ -487,69 +487,64 @@ private void showWelcomeScreen() {
     setContentView(root);
 }
 
-private void showError(String message) {
+    private void showError(String message) {
 
-    LinearLayout root = new LinearLayout(this);
+        LinearLayout root = new LinearLayout(this);
 
-    root.setOrientation(LinearLayout.VERTICAL);
-    root.setGravity(Gravity.CENTER);
-    root.setPadding(
-            50,
-            50,
-            50,
-            50
-    );
+        root.setOrientation(LinearLayout.VERTICAL);
+        root.setGravity(Gravity.CENTER);
+        root.setPadding(
+                50,
+                50,
+                50,
+                50
+        );
 
-    root.setBackgroundColor(Color.BLACK);
+        root.setBackgroundColor(Color.BLACK);
 
-    TextView error = new TextView(this);
+        TextView error = new TextView(this);
 
-    error.setText(message);
-    error.setTextColor(Color.WHITE);
-    error.setTextSize(17);
-    error.setGravity(Gravity.CENTER);
+        error.setText(message);
+        error.setTextColor(Color.WHITE);
+        error.setTextSize(17);
+        error.setGravity(Gravity.CENTER);
 
-    root.addView(
-            error,
-            new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-    );
+        root.addView(
+                error,
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+        );
 
-    Button close = new Button(this);
+        Button close = new Button(this);
 
-    close.setText("CLOSE");
-    close.setTextSize(16);
-    close.setAllCaps(false);
+        close.setText("CLOSE");
+        close.setTextSize(16);
+        close.setAllCaps(false);
 
-    close.setOnClickListener(v ->
-            finishAndRemoveTask()
-    );
+        close.setOnClickListener(v ->
+                finishAndRemoveTask()
+        );
 
-    LinearLayout.LayoutParams closeParams =
-            new LinearLayout.LayoutParams(
-                    220,
-                    72
-            );
+        LinearLayout.LayoutParams closeParams =
+                new LinearLayout.LayoutParams(
+                        220,
+                        72
+                );
 
-    closeParams.setMargins(
-            0,
-            30,
-            0,
-            0
-    );
+        closeParams.setMargins(
+                0,
+                30,
+                0,
+                0
+        );
 
-    root.addView(
-            close,
-            closeParams
-    );
+        root.addView(
+                close,
+                closeParams
+        );
 
-    setContentView(root);
-}
-
-private void finishAndRemoveTask() {
-    super.finishAndRemoveTask();
-}
-
+        setContentView(root);
+    }
 }
