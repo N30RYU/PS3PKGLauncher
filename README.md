@@ -5,7 +5,7 @@
 <h1 align="center">PS3 PKG Launcher</h1>
 
 <p align="center">
-  Launcher for ARMSX3 games from Beacon
+  Launcher for PKG+RAP ARMSX3 games from Beacon
 </p>
 # PS3 PKG Launcher
 
