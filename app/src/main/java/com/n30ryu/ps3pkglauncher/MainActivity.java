@@ -306,9 +306,9 @@ public class MainActivity extends Activity {
         TextView description = new TextView(this);
 
         description.setText(
-                "This app is designed to be used with Beacon Launcher.\n\n" +
+                "This app is designed to be used with Beacon Launcher and ARMSX3.\n\n" +
                 "In Beacon, select PS3 PKG Launcher as your PS3 application, " +
-                "enable Custom Launch, and use this command:"
+                "enable Custom Launch, and copy/paste the next command:"
         );
 
         description.setTextColor(Color.LTGRAY);
